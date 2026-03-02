@@ -82,13 +82,13 @@
     }
 
     #reveal img {
-      max-width: 90vw;
-      max-height: 60vh;
-      max-height: 60dvh;
+      max-width: 85vw;
+      max-height: calc(100dvh - 160px);
       border-radius: 12px;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
       animation: scaleIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-      flex-shrink: 0;
+      object-fit: contain;
+      min-height: 0;
     }
 
     @keyframes scaleIn {
@@ -98,12 +98,13 @@
 
     /* Signature SVG container */
     #signature-container {
-      width: 90vw;
-      max-width: 520px;
+      width: 80vw;
+      max-width: 420px;
       display: flex;
       justify-content: center;
       align-items: center;
       flex-shrink: 0;
+      min-height: 60px;
     }
 
     #signature-svg {
@@ -115,18 +116,20 @@
     /* Mobile adjustments */
     @media (max-width: 600px) {
       #reveal {
-        gap: 15px;
-        padding: 15px;
+        gap: 12px;
+        padding: 15px 10px;
       }
 
       #reveal img {
-        max-height: 50vh;
-        max-height: 50dvh;
+        max-width: 90vw;
+        max-height: calc(100dvh - 130px);
         border-radius: 8px;
       }
 
       #signature-container {
-        width: 92vw;
+        width: 85vw;
+        max-width: 350px;
+        min-height: 50px;
       }
 
       #clown {
@@ -139,15 +142,18 @@
       }
     }
 
-    @media (max-height: 500px) {
+    @media (max-height: 700px) {
       #reveal {
-        gap: 10px;
+        gap: 8px;
         padding: 10px;
       }
 
       #reveal img {
-        max-height: 45vh;
-        max-height: 45dvh;
+        max-height: calc(100dvh - 120px);
+      }
+
+      #signature-container {
+        min-height: 45px;
       }
     }
 
