@@ -74,13 +74,16 @@
 
     /* Signature container */
     #signature-wrap {
-      position: relative;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       z-index: 10;
       display: flex;
       justify-content: center;
       align-items: center;
-      width: 85vw;
-      max-width: 600px;
+      width: 70vw;
+      max-width: 450px;
     }
 
     #signature-svg {
@@ -125,7 +128,7 @@
 
     @media (max-width: 600px) {
       #signature-wrap {
-        width: 90vw;
+        width: 80vw;
       }
 
       .banana {
@@ -151,7 +154,7 @@
   <div class="nebula nebula-3"></div>
 
   <div id="signature-wrap">
-    <svg id="signature-svg" viewBox="0 0 520 100" preserveAspectRatio="xMidYMid meet">
+    <svg id="signature-svg" viewBox="0 0 285 100" preserveAspectRatio="xMidYMid meet">
       <!-- S -->
       <path class="sig-letter" d="M30,25 Q10,20 8,35 Q6,48 28,50 Q50,52 48,67 Q46,82 22,78"
             fill="none" stroke="white" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
@@ -180,8 +183,8 @@
       <path class="sig-letter" d="M250,78 L250,43 Q250,40 258,40 Q272,40 272,52 L272,78"
             fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
 
-      <!-- Underline flourish -->
-      <path class="sig-letter" d="M5,90 Q100,86 200,88 Q350,92 520,82"
+      <!-- Underline flourish — matches text width only -->
+      <path class="sig-letter" d="M8,90 Q70,86 140,88 Q210,90 275,85"
             fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
     </svg>
   </div>
