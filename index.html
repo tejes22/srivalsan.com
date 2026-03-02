@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Srivalsan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -13,10 +16,6 @@
       height: 100dvh;
       width: 100vw;
       background: #000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
     }
 
     /* Stars canvas */
@@ -72,7 +71,7 @@
       to { opacity: 1; }
     }
 
-    /* Signature container */
+    /* Signature */
     #signature-wrap {
       position: fixed;
       top: 50%;
@@ -80,17 +79,45 @@
       transform: translate(-50%, -50%);
       z-index: 10;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-      width: 70vw;
-      max-width: 450px;
+      gap: 0;
     }
 
-    #signature-svg {
-      width: 100%;
-      height: auto;
-      overflow: visible;
-      filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.15));
+    #signature {
+      font-family: 'Pinyon Script', cursive;
+      font-size: clamp(48px, 12vw, 96px);
+      color: white;
+      white-space: nowrap;
+      filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.12));
+      line-height: 1.2;
+    }
+
+    #signature .letter {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+    }
+
+    #signature .letter.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Underline */
+    #underline {
+      height: 2px;
+      background: white;
+      opacity: 0;
+      width: 0;
+      margin-top: 4px;
+      border-radius: 1px;
+      transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease-out;
+    }
+
+    #underline.visible {
+      opacity: 0.35;
     }
 
     /* Banana container */
@@ -127,10 +154,6 @@
     }
 
     @media (max-width: 600px) {
-      #signature-wrap {
-        width: 80vw;
-      }
-
       .banana {
         font-size: 30px;
       }
@@ -154,39 +177,8 @@
   <div class="nebula nebula-3"></div>
 
   <div id="signature-wrap">
-    <svg id="signature-svg" viewBox="0 0 285 100" preserveAspectRatio="xMidYMid meet">
-      <!-- S -->
-      <path class="sig-letter" d="M30,25 Q10,20 8,35 Q6,48 28,50 Q50,52 48,67 Q46,82 22,78"
-            fill="none" stroke="white" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
-      <!-- r -->
-      <path class="sig-letter" d="M62,40 L62,78 M62,55 Q62,40 78,40"
-            fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-      <!-- i -->
-      <path class="sig-letter" d="M90,40 L90,78 M90,28 L90,30"
-            fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-      <!-- v -->
-      <path class="sig-letter" d="M102,40 L112,78 L122,40"
-            fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-      <!-- a -->
-      <path class="sig-letter" d="M140,50 Q140,40 148,40 Q156,40 156,50 L156,78 M156,50 Q156,78 140,78 Q132,78 140,50"
-            fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-      <!-- l -->
-      <path class="sig-letter" d="M170,18 L170,78"
-            fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-      <!-- s -->
-      <path class="sig-letter" d="M192,46 Q184,40 184,48 Q184,55 192,57 Q200,59 200,67 Q200,78 192,76"
-            fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-      <!-- a -->
-      <path class="sig-letter" d="M218,50 Q218,40 226,40 Q234,40 234,50 L234,78 M234,50 Q234,78 218,78 Q210,78 218,50"
-            fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-      <!-- n -->
-      <path class="sig-letter" d="M250,78 L250,43 Q250,40 258,40 Q272,40 272,52 L272,78"
-            fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-
-      <!-- Underline flourish — matches text width only -->
-      <path class="sig-letter" d="M8,90 Q70,86 140,88 Q210,90 275,85"
-            fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
-    </svg>
+    <div id="signature"></div>
+    <div id="underline"></div>
   </div>
 
   <script>
@@ -213,14 +205,12 @@
         alpha: 0,
         twinkleSpeed: Math.random() * 0.02 + 0.005,
         phase: Math.random() * Math.PI * 2,
-        // Slight color tint for some stars
         color: Math.random() > 0.85
           ? `hsl(${Math.floor(Math.random() * 60 + 200)}, 60%, 85%)`
           : '#fff',
       });
     }
 
-    // Shooting stars
     const shootingStars = [];
 
     function maybeSpawnShootingStar() {
@@ -242,11 +232,9 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       time += 1;
 
-      // Draw stars
       for (const s of stars) {
         s.alpha = s.baseAlpha + Math.sin(time * s.twinkleSpeed + s.phase) * 0.3;
         s.alpha = Math.max(0, Math.min(1, s.alpha));
-
         ctx.beginPath();
         ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
         ctx.fillStyle = s.color;
@@ -254,7 +242,6 @@
         ctx.fill();
       }
 
-      // Shooting stars
       maybeSpawnShootingStar();
       ctx.globalAlpha = 1;
       for (let i = shootingStars.length - 1; i >= 0; i--) {
@@ -268,8 +255,9 @@
           continue;
         }
 
-        const tailX = ss.x - (ss.vx / Math.sqrt(ss.vx * ss.vx + ss.vy * ss.vy)) * ss.length;
-        const tailY = ss.y - (ss.vy / Math.sqrt(ss.vx * ss.vx + ss.vy * ss.vy)) * ss.length;
+        const mag = Math.sqrt(ss.vx * ss.vx + ss.vy * ss.vy);
+        const tailX = ss.x - (ss.vx / mag) * ss.length;
+        const tailY = ss.y - (ss.vy / mag) * ss.length;
 
         const grad = ctx.createLinearGradient(tailX, tailY, ss.x, ss.y);
         grad.addColorStop(0, `rgba(255,255,255,0)`);
@@ -288,57 +276,57 @@
     }
     drawStars();
 
-    // --- Signature draw-in animation ---
-    const sigLetters = document.querySelectorAll('.sig-letter');
-    sigLetters.forEach(path => {
-      const length = path.getTotalLength();
-      path.style.strokeDasharray = length;
-      path.style.strokeDashoffset = length;
-    });
+    // --- Letter-by-letter signature reveal ---
+    const name = 'Srivalsan';
+    const sigEl = document.getElementById('signature');
+    const underline = document.getElementById('underline');
 
-    // Start signature after a brief pause
+    // Create a span for each letter
+    const letterSpans = [];
+    for (const char of name) {
+      const span = document.createElement('span');
+      span.className = 'letter';
+      span.textContent = char;
+      sigEl.appendChild(span);
+      letterSpans.push(span);
+    }
+
+    // Reveal letters one by one
     setTimeout(() => {
-      let delay = 0;
-      sigLetters.forEach((path) => {
-        const length = path.getTotalLength();
-        const duration = Math.max(250, length * 5);
-
+      letterSpans.forEach((span, i) => {
         setTimeout(() => {
-          path.style.transition = `stroke-dashoffset ${duration}ms cubic-bezier(0.4, 0, 0.2, 1)`;
-          path.style.strokeDashoffset = '0';
-        }, delay);
-
-        delay += duration * 0.55;
+          span.classList.add('visible');
+        }, i * 150);
       });
+
+      // After all letters, draw the underline to match text width
+      setTimeout(() => {
+        const textWidth = sigEl.offsetWidth;
+        underline.classList.add('visible');
+        underline.style.width = textWidth + 'px';
+      }, letterSpans.length * 150 + 200);
     }, 800);
 
     // --- Banana pops ---
     function spawnBanana() {
       const banana = document.createElement('div');
       banana.className = 'banana';
-      banana.textContent = '🍌';
+      banana.textContent = '\u{1F34C}';
       banana.style.left = (Math.random() * 85 + 5) + 'vw';
       banana.style.top = (Math.random() * 80 + 5) + 'vh';
       banana.style.fontSize = (25 + Math.random() * 30) + 'px';
-      // Random slight rotation start
       banana.style.animationDuration = (2 + Math.random() * 1.5) + 's';
       document.body.appendChild(banana);
-
-      // Remove after animation
       banana.addEventListener('animationend', () => banana.remove());
     }
 
-    // Start bananas after signature begins drawing
     setTimeout(() => {
-      // Initial burst of a few
       for (let i = 0; i < 3; i++) {
         setTimeout(spawnBanana, i * 400);
       }
 
-      // Then keep spawning periodically
       setInterval(() => {
         spawnBanana();
-        // Sometimes spawn two at once
         if (Math.random() > 0.6) {
           setTimeout(spawnBanana, 200);
         }
