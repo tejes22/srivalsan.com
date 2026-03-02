@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Click the Clown!</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+      background: #1a1a2e;
+      cursor: default;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    /* Phase 1: Clown */
+    #clown {
+      position: absolute;
+      font-size: 80px;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.1s;
+      z-index: 10;
+      filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.3));
+    }
+
+    #clown:hover {
+      transform: scale(1.2);
+    }
+
+    #clown:active {
+      transform: scale(0.9);
+    }
+
+    /* Hint text */
+    #hint {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 16px;
+      letter-spacing: 2px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.7; }
+    }
+
+    /* Phase 2: Reveal */
+    #reveal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #1a1a2e;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      gap: 30px;
+      z-index: 100;
+      animation: fadeIn 0.8s ease-out;
+    }
+
+    #reveal.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    #reveal img {
+      max-width: 85vw;
+      max-height: 55vh;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      animation: scaleIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes scaleIn {
+      from { transform: scale(0.5); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    /* Signature SVG container */
+    #signature-container {
+      height: 100px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #signature-svg {
+      overflow: visible;
+    }
+
+    /* Confetti canvas */
+    #confetti {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 101;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Phase 1 -->
+  <div id="clown">🤡</div>
+  <div id="hint">catch the clown</div>
+
+  <!-- Phase 2 -->
+  <div id="reveal">
+    <canvas id="confetti"></canvas>
+    <img src="reveal.jpg" alt="Vyalsan Ponnachuth" />
+    <div id="signature-container">
+      <svg id="signature-svg" width="620" height="90" viewBox="0 0 620 90">
+        <!-- "V" -->
+        <path class="sig-letter" d="M5,10 Q8,5 12,10 L28,65 Q30,70 32,65 L48,10 Q50,5 52,10"
+              fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- "y" -->
+        <path class="sig-letter" d="M55,25 Q57,22 58,25 L58,55 Q58,58 60,55 M68,25 Q70,22 68,55 Q65,80 55,82"
+              fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- "a" -->
+        <path class="sig-letter" d="M82,35 Q82,25 90,25 Q98,25 98,35 L98,55 Q98,58 96,55 M98,35 Q98,55 82,55 Q75,55 82,35"
+              fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- "l" -->
+        <path class="sig-letter" d="M108,10 Q110,7 110,10 L110,55 Q110,58 112,55"
+              fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- "s" -->
+        <path class="sig-letter" d="M125,30 Q118,25 118,32 Q118,38 125,40 Q132,42 132,48 Q132,56 125,55"
+              fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- "a" -->
+        <path class="sig-letter" d="M142,35 Q142,25 150,25 Q158,25 158,35 L158,55 Q158,58 156,55 M158,35 Q158,55 142,55 Q135,55 142,35"
+              fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- "n" -->
+        <path class="sig-letter" d="M168,55 L168,28 Q168,25 172,25 Q185,25 185,35 L185,55"
+              fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+        <!-- connector swoosh between first and last name -->
+        <path class="sig-letter" d="M195,55 Q220,50 240,20 Q245,12 250,20"
+              fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+
+        <!-- "P" -->
+        <path class="sig-letter" d="M250,65 L250,10 Q250,5 255,8 Q275,8 275,22 Q275,38 255,38 L250,38"
+              fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- "o" -->
+        <path class="sig-letter" d="M290,40 Q290,25 300,25 Q310,25 310,40 Q310,55 300,55 Q290,55 290,40"
+              fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- "n" -->
+        <path class="sig-letter" d="M320,55 L320,28 Q320,25 324,25 Q337,25 337,35 L337,55"
+              fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- "n" -->
+        <path class="sig-letter" d="M347,55 L347,28 Q347,25 351,25 Q364,25 364,35 L364,55"
+              fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- "a" -->
+        <path class="sig-letter" d="M374,35 Q374,25 382,25 Q390,25 390,35 L390,55 Q390,58 388,55 M390,35 Q390,55 374,55 Q367,55 374,35"
+              fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- "c" -->
+        <path class="sig-letter" d="M410,30 Q405,25 400,30 Q395,38 400,50 Q405,55 410,52"
+              fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- "h" -->
+        <path class="sig-letter" d="M418,10 L418,55 M418,32 Q418,25 425,25 Q435,25 435,35 L435,55"
+              fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- "u" -->
+        <path class="sig-letter" d="M445,25 L445,48 Q445,55 455,55 Q462,55 462,48 L462,25"
+              fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- "t" -->
+        <path class="sig-letter" d="M475,15 L475,50 Q475,55 480,55 Q484,55 485,52 M468,28 L485,28"
+              fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- "h" -->
+        <path class="sig-letter" d="M492,10 L492,55 M492,32 Q492,25 500,25 Q510,25 510,35 L510,55"
+              fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+        <!-- Underline flourish -->
+        <path class="sig-letter" d="M5,72 Q150,68 300,70 Q450,72 515,65 Q520,64 515,68"
+              fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+      </svg>
+    </div>
+  </div>
+
+  <script>
+    const clown = document.getElementById('clown');
+    const hint = document.getElementById('hint');
+    const reveal = document.getElementById('reveal');
+
+    // --- Bouncing clown logic ---
+    let x = Math.random() * (window.innerWidth - 100);
+    let y = Math.random() * (window.innerHeight - 100);
+    let vx = 3 + Math.random() * 2;
+    let vy = 2 + Math.random() * 2;
+    vx *= Math.random() > 0.5 ? 1 : -1;
+    vy *= Math.random() > 0.5 ? 1 : -1;
+
+    const clownSize = 80;
+
+    function animate() {
+      x += vx;
+      y += vy;
+
+      if (x <= 0 || x >= window.innerWidth - clownSize) {
+        vx = -vx;
+        x = Math.max(0, Math.min(x, window.innerWidth - clownSize));
+      }
+      if (y <= 0 || y >= window.innerHeight - clownSize) {
+        vy = -vy;
+        y = Math.max(0, Math.min(y, window.innerHeight - clownSize));
+      }
+
+      clown.style.left = x + 'px';
+      clown.style.top = y + 'px';
+
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+
+    setInterval(() => {
+      const maxSpeed = 7;
+      if (Math.abs(vx) < maxSpeed) vx *= 1.02;
+      if (Math.abs(vy) < maxSpeed) vy *= 1.02;
+    }, 3000);
+
+    // --- Prepare signature paths (hidden initially) ---
+    const sigLetters = document.querySelectorAll('.sig-letter');
+    sigLetters.forEach(path => {
+      const length = path.getTotalLength();
+      path.style.strokeDasharray = length;
+      path.style.strokeDashoffset = length;
+    });
+
+    // --- Animate signature: draw each letter sequentially ---
+    function animateSignature() {
+      const letters = document.querySelectorAll('.sig-letter');
+      let delay = 800; // Start after image appears
+
+      letters.forEach((path, i) => {
+        const length = path.getTotalLength();
+        // Duration proportional to path length, with a minimum
+        const duration = Math.max(200, length * 4);
+
+        setTimeout(() => {
+          path.style.transition = `stroke-dashoffset ${duration}ms cubic-bezier(0.4, 0, 0.2, 1)`;
+          path.style.strokeDashoffset = '0';
+        }, delay);
+
+        delay += duration * 0.6; // Overlap letters slightly for fluid feel
+      });
+    }
+
+    // --- Click handler: transition to phase 2 ---
+    clown.addEventListener('click', () => {
+      clown.style.display = 'none';
+      hint.style.display = 'none';
+      reveal.classList.add('active');
+      launchConfetti();
+      animateSignature();
+    });
+
+    // --- Simple confetti effect ---
+    function launchConfetti() {
+      const canvas = document.getElementById('confetti');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const pieces = [];
+      const colors = ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff', '#5f27cd', '#01a3a4', '#f368e0'];
+
+      for (let i = 0; i < 150; i++) {
+        pieces.push({
+          x: Math.random() * canvas.width,
+          y: -20 - Math.random() * canvas.height,
+          w: 8 + Math.random() * 8,
+          h: 4 + Math.random() * 6,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          vx: (Math.random() - 0.5) * 4,
+          vy: 2 + Math.random() * 4,
+          rotation: Math.random() * Math.PI * 2,
+          spin: (Math.random() - 0.5) * 0.2,
+        });
+      }
+
+      function drawConfetti() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let active = false;
+
+        for (const p of pieces) {
+          if (p.y < canvas.height + 20) active = true;
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.05;
+          p.rotation += p.spin;
+
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rotation);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+          ctx.restore();
+        }
+
+        if (active) requestAnimationFrame(drawConfetti);
+      }
+
+      drawConfetti();
+    }
+  </script>
+</body>
+</html>
